@@ -183,3 +183,24 @@ export const recommendScenario = (levers: Levers | null, categories: string[]) =
   STATIC ? loadStatic('optimize/recommend') : optimizeJob(`/optimize/recommend${filterParams([], categories)}`, { levers });
 export const remedyPlan = (issueId: string) =>
   STATIC ? loadStatic(`optimize/remedies/${issueId}`) : optimizeJob('/optimize/remedy', { issue_id: issueId });
+
+// ── SAP metadata & field mapping ────────────────────────────────────────────
+// Public build: coverage, the mapping per object (default selection), one file per SAP table (fields plus the
+// detail of every mapped field), enriched samples for the mapped SAP tables and the suggestions per (table, object).
+const metaKey = (...parts: string[]) => parts.join('__');
+export const fetchMetaCoverage = () => (STATIC ? loadStatic('metadata/coverage').then(camelizeKeys) : get('/metadata/coverage'));
+export const fetchMetaMapping = (object: string) =>
+  STATIC ? loadStatic(`metadata/mapping/${object}`).then(camelizeKeys) : get(`/metadata/mapping?${new URLSearchParams({ object })}`);
+export const fetchMetaTable = (system: string, table: string) =>
+  STATIC ? loadStatic(`metadata/table/${metaKey(system, table)}`).then(camelizeKeys) : get(`/metadata/table?${new URLSearchParams({ system, table })}`);
+export async function fetchMetaField(system: string, table: string, field: string): Promise<any> {
+  if (!STATIC) return get(`/metadata/field?${new URLSearchParams({ system, table, field })}`);
+  const t = await loadStatic(`metadata/table/${metaKey(system, table)}`).catch(() => null);
+  return camelizeKeys(t?.details?.[field] ?? { found: false });
+}
+export const fetchMetaEnriched = (schema: string, table: string) =>
+  STATIC ? loadStatic(`metadata/enriched/${metaKey(schema, table)}`).then(camelizeKeys).catch(() => ({ exists: false, view: `ENRICHED.ENR_${schema}__${table}`, baked: false }))
+    : get(`/metadata/enriched?${new URLSearchParams({ schema, table })}`);
+export const fetchMetaSuggest = (system: string, table: string, object: string) =>
+  STATIC ? loadStatic(`metadata/suggest/${metaKey(system, table, object)}`).then(camelizeKeys).catch(() => ({ ready: false, message: 'Not included in the public snapshot.' }))
+    : get(`/metadata/suggest?${new URLSearchParams({ system, table, object })}`);

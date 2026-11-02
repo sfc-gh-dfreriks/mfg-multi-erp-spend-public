@@ -12,6 +12,8 @@ import Contracts from '@/pages/Contracts';
 import MatchPayments from '@/pages/MatchPayments';
 import GoldenRecord from '@/pages/GoldenRecord';
 import DataSources from '@/pages/DataSources';
+import FieldMapping from '@/pages/FieldMapping';
+import SapMetadata from '@/pages/SapMetadata';
 import Lineage from '@/pages/Lineage';
 import Pipeline3D from '@/pages/Pipeline3D';
 import ASK_TOPICS from '@/ask_topics.json';
@@ -32,6 +34,8 @@ const PAGE_COMPONENTS: Record<PageId, React.FC<{ onNavigate?: (p: PageId) => voi
   'match-payments': MatchPayments,
   'golden-record': GoldenRecord,
   'data-sources': DataSources,
+  'field-mapping': FieldMapping,
+  'sap-metadata': SapMetadata,
   lineage: Lineage,
   'pipeline-3d': Pipeline3D,
 };
