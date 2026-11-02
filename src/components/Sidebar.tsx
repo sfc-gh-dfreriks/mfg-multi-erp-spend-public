@@ -1,9 +1,9 @@
-import { LayoutDashboard, Truck, Scale, ShieldAlert, FileCheck2, Receipt, Fingerprint, Database, GitBranch, Check, Sparkles, Target } from 'lucide-react';
+import { LayoutDashboard, Truck, Scale, ShieldAlert, FileCheck2, Receipt, Fingerprint, Database, GitBranch, Check, Sparkles, Target, Boxes } from 'lucide-react';
 import { useFilters } from '@/hooks/useFilters';
 import { cn } from '@/lib/utils';
 
 export type PageId = 'ask-cortex' | 'overview' | 'suppliers' | 'price-variance' | 'supplier-risk' | 'supplier-optimization' | 'contracts' | 'match-payments'
-  | 'golden-record' | 'data-sources' | 'lineage';
+  | 'golden-record' | 'data-sources' | 'lineage' | 'pipeline-3d';
 
 export interface NavItem { id: PageId; label: string; icon: React.ElementType; }
 
@@ -19,6 +19,7 @@ export const NAV_ITEMS: NavItem[] = [
   { id: 'golden-record', label: 'Supplier Golden Record', icon: Fingerprint },
   { id: 'data-sources', label: 'Data Sources', icon: Database },
   { id: 'lineage', label: 'Sources & Lineage (dbt)', icon: GitBranch },
+  { id: 'pipeline-3d', label: 'Pipeline in 3D', icon: Boxes },
 ];
 
 interface SidebarProps { activePage: PageId; onNavigate: (page: PageId) => void; }

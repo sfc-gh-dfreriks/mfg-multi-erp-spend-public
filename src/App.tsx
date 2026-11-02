@@ -13,6 +13,7 @@ import MatchPayments from '@/pages/MatchPayments';
 import GoldenRecord from '@/pages/GoldenRecord';
 import DataSources from '@/pages/DataSources';
 import Lineage from '@/pages/Lineage';
+import Pipeline3D from '@/pages/Pipeline3D';
 import ASK_TOPICS from '@/ask_topics.json';
 import { STATIC } from '@/lib/api';
 
@@ -32,6 +33,7 @@ const PAGE_COMPONENTS: Record<PageId, React.FC<{ onNavigate?: (p: PageId) => voi
   'golden-record': GoldenRecord,
   'data-sources': DataSources,
   lineage: Lineage,
+  'pipeline-3d': Pipeline3D,
 };
 
 function AppShell() {

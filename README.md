@@ -22,6 +22,7 @@ silver layer and gold marts on Snowflake, then on to a semantic view, a Cortex A
   issue are pre-generated.
 - **Ask Cortex:** answers are pre-generated for each page's default analysis and every suggested question. Free-text questions
   need the full deployment.
+- **Pipeline in 3D:** three interactive three.js views of the pipeline: a Data Factory, a 3D Sankey and the dbt lineage as a 3D constellation. They are built from the same snapshots.
 - **Data Sources:** browse each source type and preview its native tables. Apply (which runs dbt in Snowflake) is disabled.
 
 ## Refresh

@@ -10,6 +10,8 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
+    // One three.js instance: 3d-force-graph ships its own copy, and three's type checks fail across copies.
+    dedupe: ['three'],
   },
   server: {
     port: 5188,
