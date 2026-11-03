@@ -21,11 +21,23 @@ const OBJECT_LABEL: Record<string, string> = {
   SUPPLIER: 'Supplier', PO_LINE: 'PO line', GOODS_RECEIPT: 'Goods receipt', INVOICE_LINE: 'Invoice line',
   PAYMENT: 'Payment', CONTRACT_ITEM: 'Contract item', PRICE_CONDITION: 'Price condition',
 };
+// Gold in the 3D views = only the analytical marts the app's pages deliver. The dbt graph also tags
+// per-source enrichment views (enr_*), metadata tables and source coverage as gold; those stay on the
+// Lineage page but are left out here.
 const MART_LABEL: Record<string, string> = {
   fct_spend: 'Spend', fct_price_variance: 'Price variance', fct_three_way_match: '3-way match', fct_payment: 'Payments',
-  dim_supplier: 'Golden supplier', dim_supplier_risk: 'Supplier risk', mart_source_coverage: 'Source coverage',
+  dim_supplier: 'Golden supplier', dim_supplier_risk: 'Supplier risk',
   mart_supplier_opportunity: 'Opportunities', mart_supplier_issues: 'Issues',
 };
+const isAppMart = (n: any) => n.layer === 'gold' && n.name in MART_LABEL;
+
+/** Keep the dbt graph to what feeds the app marts: drop non-app gold nodes, then anything left unconnected. */
+function appLineage(nodes: any[], edges: any[]) {
+  const dropped = new Set(nodes.filter((n) => n.layer === 'gold' && !isAppMart(n)).map((n) => n.id));
+  const es = edges.filter((e) => !dropped.has(e.source) && !dropped.has(e.target));
+  const linked = new Set(es.flatMap((e) => [e.source, e.target]));
+  return { nodes: nodes.filter((n) => !dropped.has(n.id) && linked.has(n.id)), edges: es };
+}
 
 export function buildFlowModel(sources: any, lineage: any, overview: any): FlowModel {
   const slots: any[] = sources?.slots ?? [];
@@ -58,10 +70,9 @@ export function buildFlowModel(sources: any, lineage: any, overview: any): FlowM
   }
 
   // Gold marts and silver → gold edges from the dbt graph (following silver → silver hops).
-  const ln: any[] = lineage?.nodes ?? [];
-  const le: any[] = lineage?.edges ?? [];
+  const { nodes: ln, edges: le } = appLineage(lineage?.nodes ?? [], lineage?.edges ?? []);
   const byId = new Map(ln.map((n) => [n.id, n]));
-  const gold = ln.filter((n) => n.layer === 'gold');
+  const gold = ln.filter(isAppMart);
   const silverObject = (n: any) => objects.find((o) => o.toLowerCase() === String(n.name).toLowerCase());
   const objectsFeeding = (goldId: string) => {
     const seen = new Set<string>(); const out = new Set<string>(); const stack = [goldId];
@@ -94,7 +105,7 @@ export function buildFlowModel(sources: any, lineage: any, overview: any): FlowM
 }
 
 export const STAGE_X: Record<Stage, number> = { source: -9, object: -2.5, mart: 4, snowflake: 10 };
-export const STAGE_LABEL: Record<Stage, string> = { source: 'SAP & non-SAP sources', object: 'Canonical silver', mart: 'Gold marts', snowflake: 'Served on Snowflake' };
+export const STAGE_LABEL: Record<Stage, string> = { source: 'SAP & non-SAP sources', object: 'Canonical silver', mart: 'Gold analytical marts', snowflake: 'Served on Snowflake' };
 
 export const COLOR = {
   sap: '#29b5e8', nonSap: '#8b5cf6', object: '#10b981', mart: '#f59e0b', snowflake: '#29b5e8', inactive: '#94a3b8',
