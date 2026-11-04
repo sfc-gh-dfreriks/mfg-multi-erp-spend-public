@@ -9,6 +9,8 @@ The app unifies spend from two SAP instances, each readable as SAP ECC, S/4HANA,
 Dynamics 365 and NetSuite companies and Coupa indirect spend. The data flows through dbt staging adapters, a canonical
 silver layer and gold marts on Snowflake, then on to a semantic view, a Cortex Agent and this React app. All data is synthetic.
 
+**Snowflake employees:** the live app (live queries, free-text Ask Cortex, saved scenarios) is also on the internal marketplace as the Native App listing **`MULTI_ERP_SPEND_ORG`** in the SAP BDC demo orgs (US West, EU Frankfurt, APAC Sydney).
+
 ## How the public build works
 
 - **Snapshot:** built with `VITE_STATIC=1`, the client reads pre-baked JSON in `public/data/` instead of a live `/api`.
