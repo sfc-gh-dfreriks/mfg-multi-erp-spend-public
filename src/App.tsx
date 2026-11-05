@@ -17,7 +17,7 @@ import SapMetadata from '@/pages/SapMetadata';
 import Lineage from '@/pages/Lineage';
 import Pipeline3D from '@/pages/Pipeline3D';
 import ASK_TOPICS from '@/ask_topics.json';
-import { STATIC } from '@/lib/api';
+import { NATIVE, STATIC } from '@/lib/api';
 
 // Ask Cortex: per-page topic (server TOPICS in routes/askCortex.ts) + suggested questions.
 // Shared with scripts/export-static.mjs, which bakes an answer for each one for the public build.
@@ -54,6 +54,12 @@ function AppShell() {
           <Icon className="h-6 w-6 text-sf-primary" />
           <h1 className="text-2xl font-bold text-sf-deeper">{navItem.label}</h1>
         </div>
+        {NATIVE && (
+          <div className="mb-4 rounded-lg border border-sky-200 bg-sky-50 px-4 py-2 text-xs text-sky-900">
+            Snowflake Native App: live queries over synthetic data bundled in this installation (SAP A = ECC, SAP B = S/4HANA, all non-SAP sources on).
+            Ask Cortex runs live. Switching source systems needs the full deployment.
+          </div>
+        )}
         {STATIC && (
           <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-2 text-xs text-amber-900">
             Public demo: a read-only snapshot of synthetic data (SAP A = ECC, SAP B = S/4HANA, all non-SAP sources on). Filters show an exact company
